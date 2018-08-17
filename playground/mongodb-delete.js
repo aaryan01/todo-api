@@ -5,7 +5,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', {
   useNewUrlParser: true
 }, (err, client) => {
   if (err) {
-    return console.log('Unable to connec to mongodb sever');
+    return console.log('Unable to connect to mongodb sever');
   }
   console.log('Connected to MongoDb sever');
 
@@ -13,7 +13,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', {
 
 //delete
 
-  db.collection('Users').deleteMany({name: 'Aaryan Budhiraja'}).then((result)  =>  {
+ db.collection('Todos').findOneAndDelete({text: 'lol'}).then((result)  =>  {
     console.log(result);
   });
 
