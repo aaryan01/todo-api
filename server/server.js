@@ -14,6 +14,9 @@ var {
 var {
   User
 } = require('./models/user');
+var {
+  authenticate
+} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -91,8 +94,7 @@ app.patch('/todos/:id', (req, res) => {
     body.completedAt = null;
   }
 
-  Todo.findByIdAndUpdate(id,
-  {
+  Todo.findByIdAndUpdate(id, {
     $set: body
   }, {
     new: true
@@ -108,17 +110,23 @@ app.patch('/todos/:id', (req, res) => {
   });
 });
 
-app.post('/users', (req, res) =>  {
+app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var user = new User(body);
 
-  user.save().then((user) =>  {
+  user.save().then((user) => {
     return user.generateAuthToken();
-  }).then((token) =>  {
+  }).then((token) => {
     res.header('x-auth', token).send(user);
-  }).catch((e)  =>  {
+  }).catch((e) => {
     res.status(400).send(e);
   });
+});
+
+
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 app.listen(port, () => {
